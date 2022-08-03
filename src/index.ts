@@ -29,7 +29,7 @@ class Cli {
     } catch (e) {
       lastVersion = '0.0.0';
     }
-    if (semver.lt(currentVersion, lastVersion)) {
+    if (!semver.lt(currentVersion, lastVersion)) {
       log.info('tip', `quan-cli最新版本${lastVersion} 当前版本${currentVersion}`);
       log.info('tip', `使用npm install quan-cli 更新`);
     }

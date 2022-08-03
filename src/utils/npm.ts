@@ -16,4 +16,8 @@ export class NpmUtil {
     const version = data['dist-tags'].latest;
     return version;
   }
+  //获取npm包在文件中的名字
+  static getPackageDirName(packageName: string, version: string): string {
+    return '_' + packageName + '@' + version + '@' + packageName;
+  }
 }

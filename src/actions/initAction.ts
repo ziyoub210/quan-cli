@@ -4,6 +4,7 @@ import path from 'path';
 import userhome from 'userhome';
 import inquirer from 'inquirer';
 import fse from 'fs-extra';
+import axios from 'axios';
 //@ts-ignore
 import npminstall from 'npminstall';
 import { log, FileUtil, NpmUtil, loading, sleep } from '../utils';
@@ -26,6 +27,7 @@ export class InitAction {
   basePath!: string;
   force: boolean;
   templates!: template[];
+  template!: template;
   origin!: string;
   homePath: string = userhome();
   constructor(option: initCommand) {
@@ -43,7 +45,8 @@ export class InitAction {
     this.checkPath();
     this.checkForce();
     await this.checkPrompt();
-    this.getTemplate();
+    await this.getTemplate();
+    await this.selectTemplate();
     await this.getTemplateVersion();
     await this.install();
   }
@@ -84,27 +87,26 @@ export class InitAction {
     return isDelDir;
   }
   async getTemplateVersion() {
-    return await NpmUtil.getLatestVersion(this.templates[0].store, this.origin);
+    return await NpmUtil.getLatestVersion(this.template.store, this.origin);
   }
   async install() {
-    // const version = await this.getTemplateVersion();
-    const version = '1.0.0';
-    log.debug(`执行安装:${this.templates[0].store}，版本:${version}`);
+    const version = await this.getTemplateVersion();
+    log.debug(`执行安装:${this.template.store}，版本:${version}`);
     log.debug(path.resolve(this.homePath, paths.ROOT_PATH, paths.TARGET_PATH));
     const loadingStart = loading('正在下载模板...');
     await sleep(1500);
     await npminstall({
       root: path.resolve(this.homePath, paths.ROOT_PATH, paths.TARGET_PATH),
       registry: this.origin,
-      pkgs: [{ name: this.templates[0].store, version: version }],
+      pkgs: [{ name: this.template.store, version: version }],
     });
-    this.copy(this.templates[0].store, version);
+    this.copy(this.template.store, version);
     loadingStart.stop(true);
     log.info('info', '模板下载完成');
   }
   //執行copy
   copy(name: string, version: string) {
-    const packageName = '_' + name + '@' + version + '@' + name;
+    const packageName = NpmUtil.getPackageDirName(name, version);
     const originPath = path.resolve(
       this.homePath,
       paths.ROOT_PATH,
@@ -117,14 +119,25 @@ export class InitAction {
     fse.copySync(originPath, targetPath);
     process.exit(1);
   }
-  getTemplate() {
-    const names = [
+  async selectTemplate() {
+    const { template } = await inquirer.prompt([
       {
-        id: 1,
-        name: 'vue3+ts标准模板',
-        store: 'cyq-cli-template-vue3',
+        type: 'list',
+        name: 'template',
+        message: '请选择要下载的模板',
+        choices: this.templates.map((item) => item.name),
       },
-    ];
-    this.templates = names;
+    ]);
+    this.template = this.templates.filter((item) => item.name === template)[0];
+  }
+  async getTemplate() {
+    const {
+      data: { data },
+    } = await axios({
+      method: 'get',
+      url: 'http://localhost/quan-cli/getAllTemplate',
+    });
+
+    this.templates = data;
   }
 }
