@@ -10,7 +10,7 @@ log.addLevel('debug', 1000, { fg: 'blue', bg: 'black' });
 
 const setLogLevel = (level: customLogLevels) => {
   log.level = level;
-  console.log(log.level);
+  log.debug(log.level + '模式开启');
 };
 
 export { log, setLogLevel };

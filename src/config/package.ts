@@ -1,7 +1,7 @@
 import { log } from '../utils';
-const pack = require('../../package');
+const packJson = require('../../package');
 
-log.debug('package', JSON.stringify(pack));
+log.debug('package', JSON.stringify(packJson));
 
 export interface Package {
   name: string;
@@ -9,4 +9,4 @@ export interface Package {
   author: string;
 }
 
-export default pack as Package;
+export const pack = packJson as Package;
