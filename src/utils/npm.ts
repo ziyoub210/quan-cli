@@ -6,7 +6,7 @@ export class NpmUtil {
     return isOriginal ? 'https://registry.npmjs.org' : 'https://registry.npm.taobao.org';
   }
   //获取npm最新版本号
-  static async getLatestVersion(packageName: string, origin: string = NpmUtil.getNpmRegistry(false)) {
+  static async getLatestVersion(packageName: string, origin: string = NpmUtil.getNpmRegistry(true)) {
     log.debug('链接' + origin + '/' + packageName);
     const { data } = await axios({
       method: 'get',

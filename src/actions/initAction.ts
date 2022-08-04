@@ -33,7 +33,7 @@ export class InitAction {
   constructor(option: initCommand) {
     this.basePath = option.packagePath || this.cwdPath;
     this.force = option.force || false;
-    this.origin = option.origin || NpmUtil.getNpmRegistry(false);
+    this.origin = option.origin || NpmUtil.getNpmRegistry(true);
     this.initAction();
   }
   //初始化
@@ -131,13 +131,13 @@ export class InitAction {
     this.template = this.templates.filter((item) => item.name === template)[0];
   }
   async getTemplate() {
+
     const {
       data: { data },
     } = await axios({
       method: 'get',
-      url: 'http://localhost/quan-cli/getAllTemplate',
+      url: 'http://101.42.154.196/quan-cli/getAllTemplate',
     });
-
     this.templates = data;
   }
 }
