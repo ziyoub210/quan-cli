@@ -136,7 +136,7 @@ export class InitAction {
       data: { data },
     } = await axios({
       method: 'get',
-      url: 'http://101.42.154.196/quan-cli/getAllTemplate',
+      url: 'http://luckqq.xyz/quan-cli/getAllTemplate',
     });
     this.templates = data;
   }
