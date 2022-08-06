@@ -1,7 +1,8 @@
 {
   "name": "quan-cli",
   "version": "1.0.0",
-  "description": "",
+  "description": "一个用于用于下载包的简易脚手架",
+  "homepage": "https://gitee.com/luckqq/quan-cli",
   "main": "index.js",
   "bin": {
     "quan-cli": "./bin/index.js"
